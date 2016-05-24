@@ -36,6 +36,8 @@ public class AudioDaoImpl implements AudioDao{
                 }
 
                 rs.close();
+
+                //TODO save Authors_Audios
             }
 
         } catch (SQLException e) {
@@ -142,7 +144,7 @@ public class AudioDaoImpl implements AudioDao{
         try {
             statement = connection.prepareStatement("SELECT au.ID, au.TITLE, au.YEAR, au.DURATION FROM AUDIOS au \n" +
                     "INNER AUTHORS_AUDIOS aa ON au.id = aa.AUDIO_ID WHERE aa.AUTHOR_ID = ? ");
-            statement.setInt(1, id);
+            statement.setInt(1, author.getId());
             ResultSet rs = statement.executeQuery();
             audios = new LinkedHashSet();
             while (rs.next()) {
@@ -177,7 +179,7 @@ public class AudioDaoImpl implements AudioDao{
         try {
             statement = connection.prepareStatement("SELECT au.ID, au.TITLE, au.DURATION FROM AUDIOS au \n" +
                     "INNER AUTHORS_AUDIOS aa ON au.id = aa.AUDIO_ID WHERE aa.AUTHOR_ID = ? AND au.YEAR = ?");
-            statement.setInt(1, id);
+            statement.setInt(1, author.getId());
             statement.setInt(2, year);
             ResultSet rs = statement.executeQuery();
             audios = new LinkedHashSet();
@@ -258,24 +260,25 @@ public class AudioDaoImpl implements AudioDao{
     }
 
     @Override
-    public List<Audio> getAudiosFromEldestAuthor() {
+    public Set<Audio> getAudiosFromEldestAuthor() {
         Set<Audio> audios = null;
-        PreparedStatement statement = null;
+        Statement statement = null;
         try {
-            statement = connection.prepareStatement("SELECT au.ID, au.TITLE, au.YEAR, au.DURATION FROM AUDIOS au \n" +
-                    "INNER AUTHORS_AUDIOS aa ON au.id = aa.AUDIO_ID WHERE aa.AUTHOR_ID = ? ");
-            statement.setInt(1, id);
-            ResultSet rs = statement.executeQuery();
+            statement = connection.createStatement();;
+
+            ResultSet rs = statement.executeQuery("SELECT au.ID, au.TITLE, au.YEAR, au.DURATION, aa.AUTHOR_ID FROM AUDIOS au \n" +
+                    "INNER AUTHORS_AUDIOS aa ON au.id = aa.AUDIO_ID WHERE aa.AUTHOR_ID = ( SELECT ID FROM AUTHORS WHERE BIRTHDAY = (SELECT MIN(BIRTHDAY) FROM AUTHORS) limit 1) ");
             audios = new LinkedHashSet();
             while (rs.next()) {
                 Audio audio = new Audio();
-                audio.setId(rs.getInt(1));
-                audio.setTitle(rs.getString(2));
-                audio.setYear(rs.getInt(3));
-                audio.setDuration(rs.getInt(4));
+                audio.setId(rs.getInt("au.ID"));
+                audio.setTitle(rs.getString("au.TITLE"));
+                audio.setYear(rs.getInt("au.YEAR"));
+                audio.setDuration(rs.getInt("au.DURATION"));
                 audios.add(audio);
+                Author author = new Author();
+                author.setId(rs.getInt("aa.AUTHOR_ID"));
             }
-
             rs.close();
 
         } catch (SQLException e) {

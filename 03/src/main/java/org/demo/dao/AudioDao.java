@@ -19,5 +19,5 @@ public interface AudioDao {
     Set<Audio> getAudiosByAuthorByYear(Author author, int year);
 
     List<Audio> getAudiosForYearWithAuthors(int year);
-    List<Audio> getAudiosFromEldestAuthor();
+    Set<Audio> getAudiosFromEldestAuthor();
 }
