@@ -3,6 +3,7 @@ package org.demo.dao;
 import org.demo.models.Audio;
 import org.demo.models.Author;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -17,6 +18,6 @@ public interface AudioDao {
     Set<Audio> getAudiosByAuthor(Author author);
     Set<Audio> getAudiosByAuthorByYear(Author author, int year);
 
-    Set<Audio> getAudiosForYearWithAuthors(int year);
-    Set<Audio> getAudiosFromEldestAuthor();
+    List<Audio> getAudiosForYearWithAuthors(int year);
+    List<Audio> getAudiosFromEldestAuthor();
 }
