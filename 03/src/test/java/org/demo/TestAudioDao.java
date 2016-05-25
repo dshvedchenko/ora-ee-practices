@@ -9,6 +9,7 @@ import org.junit.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Set;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -55,14 +56,16 @@ public class TestAudioDao {
 
     @Test
     public void TestDelete() {
-        Audio audio = new Audio();
-        audio.setId(1);
-        boolean res = audioDao.delete(audio);
-        Assert.assertEquals(true, res);
+        Set<Audio> audios = audioDao.getAll();
+        for(Audio audio : audios ) {
+            boolean res = audioDao.delete(audio);
+            Assert.assertEquals(true, res);
+            break;
+        };
     }
 
     @Test
-    public void TestDeleteALl() {
+    public void TestDeleteAll() {
         Audio audio = new Audio();
         boolean res = audioDao.deleteAll();
         Assert.assertEquals(true, res);

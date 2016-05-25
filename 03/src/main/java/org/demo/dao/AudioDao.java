@@ -16,6 +16,8 @@ public interface AudioDao {
     boolean delete(Audio audio);
     boolean deleteAll();
 
+    Set<Audio> getAll();
+
     Set<Audio> getAudiosByAuthor(Author author);
     Set<Audio> getAudiosByAuthorByYear(Author author, int year);
 

@@ -116,6 +116,40 @@ public class AudioDaoImpl implements AudioDao{
     }
 
     @Override
+    public Set<Audio> getAll() {
+        Set<Audio> audios = null;
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement("SELECT au.ID, au.TITLE, au.YEAR, au.DURATION FROM AUDIOS au ");
+
+            ResultSet rs = statement.executeQuery();
+            audios = new LinkedHashSet();
+            while (rs.next()) {
+                Audio audio = new Audio();
+                audio.setId(rs.getInt("au.ID"));
+                audio.setTitle(rs.getString("au.TITLE"));
+                audio.setYear(rs.getInt("au.YEAR"));
+                audio.setDuration(rs.getInt("au.DURATION"));
+                audios.add(audio);
+            }
+
+            rs.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return audios;
+    }
+
+    @Override
     public boolean delete(Audio audio) {
         PreparedStatement statement = null;
         int rows = 0;
