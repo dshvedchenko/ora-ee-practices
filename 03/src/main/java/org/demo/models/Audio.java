@@ -9,7 +9,7 @@ import java.util.Set;
  */
 @Data
 public class Audio {
-    private int id;
+    private Integer id;
     private String title;
     private Integer year;
     private Integer duration;

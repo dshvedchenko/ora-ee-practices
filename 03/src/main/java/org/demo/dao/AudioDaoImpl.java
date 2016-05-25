@@ -24,7 +24,7 @@ public class AudioDaoImpl implements AudioDao{
     public Audio save(Audio audio) {
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement("INSERT INTO AUDIOS (TITLE, YEAR,DUARION) VALUES (?,?,?) ", Statement.RETURN_GENERATED_KEYS);
+            statement = connection.prepareStatement("INSERT INTO AUDIOS (TITLE, YEAR,DURATION) VALUES (?,?,?) ", Statement.RETURN_GENERATED_KEYS);
             statement.setString(1,audio.getTitle());
             statement.setInt(2, audio.getYear());
             statement.setInt(3, audio.getDuration());
@@ -135,6 +135,27 @@ public class AudioDaoImpl implements AudioDao{
             }
         }
         return rows == 1;
+    }
+
+    @Override
+    public boolean deleteAll() {
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement("DELETE FROM AUDIOS");
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
     }
 
     @Override
